@@ -1,6 +1,6 @@
-# Error Handling
+# Types of Functions
 
-This Solidity program is a simple "error hadling" program that demonstrates the basic syntax and functionality of the Solidity programming language. The purpose of this program is to show the usage of require() , revert()and assert() statements .
+This Solidity program is a simple program that demonstrates the basic syntax and functionality of the Solidity programming language. The purpose of this program is to show the usage of require() , revert() and assert() statements .
 
 # Description
 
