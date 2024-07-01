@@ -67,43 +67,8 @@ This repository contains a Solidity smart contract named `LocalStore` that facil
 
 ### Using Remix IDE
 
-1. **Compile and Deploy**:
+ **Compile and Deploy**:
    - Open Remix IDE (https://remix.ethereum.org/).
    - Copy the entire `LocalStore.sol` contract code into a new file in Remix.
    - Navigate to the "Solidity Compiler" tab, compile the contract (`LocalStore.sol`), and resolve any compilation errors.
    - Switch to the "Deploy & Run Transactions" tab, select the correct compiler version (`0.8.0`), and deploy the contract by clicking on the `Deploy` button.
-
-2. **Interact with the Contract**:
-   - Once deployed, Remix provides an interface to interact with each function of the contract (`addItem`, `purchaseItem`, `withdrawFunds`, `emergencyStop`, `mint`).
-   - Use the provided input fields to call each function with appropriate parameters.
-   - Monitor the console for transaction details and events emitted by the contract.
-
-### Using Truffle (Local Development)
-
-1. **Setup**:
-   - Ensure you have Node.js and npm installed on your machine.
-   - Install Truffle globally: `npm install -g truffle`.
-
-2. **Project Initialization**:
-   - Create a new directory for your project: `mkdir LocalStoreProject`.
-   - Navigate into the project directory: `cd LocalStoreProject`.
-   - Initialize a new Truffle project: `truffle init`.
-
-3. **Contract Deployment**:
-   - Place `LocalStore.sol` inside the `contracts` directory.
-   - Update `2_deploy_contracts.js` in the `migrations` directory to deploy `LocalStore`.
-   - Example content of `2_deploy_contracts.js`:
-     ```javascript
-     const LocalStore = artifacts.require("LocalStore");
-
-     module.exports = function (deployer) {
-       deployer.deploy(LocalStore);
-     };
-     ```
-
-4. **Compile and Migrate**:
-   - Compile the contracts: `remix compile`.
-   - Migrate the contracts to the chosen network .
-
-5. **Interact with the Contract**:
-   - Use remix console to interact with deployed contracts:
