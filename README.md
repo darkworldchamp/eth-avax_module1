@@ -1,56 +1,109 @@
-# Types of Functions
+# LocalStore Solidity Smart Contract
 
-This is a Solidity smart contract demonstrating error handling mechanisms using require, assert, and custom revert functions.
+This repository contains a Solidity smart contract named `LocalStore` that facilitates a local store system on the Ethereum blockchain. Below, you'll find an overview of its functions, potential errors, and instructions on how to compile, deploy, and interact with the contract.
 
-## Contract Details
+## Functions
 
-- **Solidity Version**: ^0.8.0
+### `addItem`
 
-## Features
+- **Description**: Adds a new item to the store.
+- **Parameters**:
+  - `name`: Name of the item.
+  - `price`: Price of the item.
+  - `stock`: Initial stock of the item.
+- **Access**: Only the contract owner can call this function (`onlyOwner` modifier).
+- **Errors**:
+  - Reverts if `price` is not greater than 0.
+  - Reverts if `stock` is not greater than 0.
 
-### Constructor
+### `purchaseItem`
 
-The constructor initializes the contract with an initial balance, ensuring it meets a minimum requirement.
+- **Description**: Allows a buyer to purchase an item from the store.
+- **Parameters**:
+  - `id`: ID of the item to purchase.
+  - `quantity`: Quantity of the item to purchase.
+  - `paymentAmount`: Amount of Ether sent as payment.
+- **Access**: Public function.
+- **Errors**:
+  - Reverts if `id` does not correspond to an existing item.
+  - Reverts if `quantity` is not greater than 0.
+  - Reverts if there is not enough `stock` of the item.
+  - Reverts if `paymentAmount` does not match the calculated price for the specified quantity.
 
-### Functions
+### `withdrawFunds`
 
-#### Withdraw Function
+- **Description**: Allows the contract owner to withdraw Ether balance from the contract.
+- **Access**: Only the contract owner can call this function (`onlyOwner` modifier).
+- **Errors**:
+  - Reverts if there are no funds (`balance`) available in the contract.
 
-- **Function**: `withdraw(uint amount)`
-- **Description**: Allows withdrawing a specified amount from the contract balance.
-- **Error Handling**: Checks if the contract balance is sufficient to cover the withdrawal amount.
+### `emergencyStop`
 
-#### Assert Function
+- **Description**: Allows the contract owner to view the emergency stop status.
+- **Access**: View function; anyone can call this function to view the status.
+- **Errors**:
+  - Always reverts with "Emergency stop initiated" message.
 
-- **Function**: `assertFunction()`
-- **Description**: Demonstrates the use of `assert` to validate a condition that should always be true. Raises an exception if the condition fails.
+### `mint`
 
-#### Revert Function
+- **Description**: Allows the contract owner to increase the balance of a specific account.
+- **Parameters**:
+  - `account`: Address of the account to increase the balance.
+  - `amount`: Amount to increase the balance.
+- **Access**: Only the contract owner can call this function (`onlyOwner` modifier).
+- **Errors**:
+  - Reverts if `account` address is invalid (`address(0)`).
+  - Reverts if `amount` is not greater than 0.
 
-- **Function**: `revertFunction(uint _amount)`
-- **Description**: Custom function showcasing the use of `revert` with a custom error message (`low_balance`) if a condition is not met.
+## Errors
 
-## Usage
+- **Withdrawal failed**: Occurs when the `withdrawFunds` function fails to transfer Ether to the owner.
+- **Invalid account address**: Occurs in the `mint` function if the provided `account` address is `address(0)`.
+- **Amount must be greater than 0**: Occurs in `addItem` and `mint` functions if the provided amount or price is zero or negative.
+- **Not enough stock**: Occurs in `purchaseItem` if the requested quantity exceeds the available stock.
+- **Incorrect payment amount**: Occurs in `purchaseItem` if the sent Ether amount does not match the calculated price for the items.
 
-### Deployment
+## How to Run
 
-1. Compile the contract using Remix, Truffle, or another Solidity development environment.
-2. Deploy the compiled contract, ensuring to provide an initial balance of at least 1000.
+### Using Remix IDE
 
-### Interacting with the Contract
+1. **Compile and Deploy**:
+   - Open Remix IDE (https://remix.ethereum.org/).
+   - Copy the entire `LocalStore.sol` contract code into a new file in Remix.
+   - Navigate to the "Solidity Compiler" tab, compile the contract (`LocalStore.sol`), and resolve any compilation errors.
+   - Switch to the "Deploy & Run Transactions" tab, select the correct compiler version (`0.8.0`), and deploy the contract by clicking on the `Deploy` button.
 
-- Use a web3 provider or MetaMask to interact with the contract functions.
-- Call `withdraw` to test balance validations.
-- Call `assertFunction` and `revertFunction` to explore assert and revert mechanisms.
+2. **Interact with the Contract**:
+   - Once deployed, Remix provides an interface to interact with each function of the contract (`addItem`, `purchaseItem`, `withdrawFunds`, `emergencyStop`, `mint`).
+   - Use the provided input fields to call each function with appropriate parameters.
+   - Monitor the console for transaction details and events emitted by the contract.
 
-## Testing
+### Using Truffle (Local Development)
 
-- Develop comprehensive tests to validate error handling scenarios using Solidity testing frameworks like Hardhat or Truffle.
+1. **Setup**:
+   - Ensure you have Node.js and npm installed on your machine.
+   - Install Truffle globally: `npm install -g truffle`.
 
-## License
+2. **Project Initialization**:
+   - Create a new directory for your project: `mkdir LocalStoreProject`.
+   - Navigate into the project directory: `cd LocalStoreProject`.
+   - Initialize a new Truffle project: `truffle init`.
 
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+3. **Contract Deployment**:
+   - Place `LocalStore.sol` inside the `contracts` directory.
+   - Update `2_deploy_contracts.js` in the `migrations` directory to deploy `LocalStore`.
+   - Example content of `2_deploy_contracts.js`:
+     ```javascript
+     const LocalStore = artifacts.require("LocalStore");
 
-## Disclaimer
+     module.exports = function (deployer) {
+       deployer.deploy(LocalStore);
+     };
+     ```
 
-Ensure thorough testing and auditing of the smart contract before deploying it in a production environment.
+4. **Compile and Migrate**:
+   - Compile the contracts: `remix compile`.
+   - Migrate the contracts to the chosen network .
+
+5. **Interact with the Contract**:
+   - Use remix console to interact with deployed contracts:
