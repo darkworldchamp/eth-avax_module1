@@ -1,4 +1,4 @@
-# FUNCTIONS AND ERRORS
+# TYPES OF FUNCTIONS
 
 This repository contains a Solidity smart contract named `LocalStore` that facilitates a local store system on the Ethereum blockchain. Below, you'll find an overview of its functions, potential errors, and instructions on how to compile, deploy, and interact with the contract.
 
