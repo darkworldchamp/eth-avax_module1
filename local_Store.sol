@@ -29,17 +29,7 @@ contract LocalStore {
         require(msg.sender == owner, "Only owner can call this function");
         _;
     }
-    function purchaseItem(uint id, uint quantity, uint paymentAmount) public payable {
-        Item storage item = items[id];
-        require(item.id != 0, "Item does not exist");
-        require(quantity > 0, "Quantity must be greater than 0");
-        require(item.stock >= quantity, "Not enough stock");
-        require(paymentAmount == item.price * quantity, "Incorrect payment amount");
 
-        item.stock -= quantity; // Deduct stock of the item
-
-        emit ItemPurchased(id, msg.sender, quantity); // Emit ItemPurchased event
-    }
     // Function to add a new item to the store
     function addItem(string memory name, uint price, uint stock) public onlyOwner {
         require(price > 0, "Price must be greater than 0");
@@ -48,19 +38,42 @@ contract LocalStore {
         itemCount++;
         items[itemCount] = Item(itemCount, name, price, stock); // Add item to items mapping
 
+        // Assert conditions to ensure item was added correctly
+        assert(items[itemCount].id == itemCount);
+        assert(keccak256(bytes(items[itemCount].name)) == keccak256(bytes(name)));
+        assert(items[itemCount].price == price);
+        assert(items[itemCount].stock == stock);
+
         emit ItemAdded(itemCount, name, price, stock); // Emit ItemAdded event
     }
 
     // Function to purchase an item
-    
+    function purchaseItem(uint id, uint quantity) public {
+        Item storage item = items[id];
+        require(item.id != 0, "Item does not exist");
+        require(quantity > 0, "Quantity must be greater than 0");
+        require(item.stock >= quantity, "Not enough stock");
+        uint totalPrice = item.price * quantity;
+        require(balances[msg.sender] >= totalPrice, "Insufficient balance");
+
+        item.stock -= quantity; // Deduct stock of the item
+        balances[msg.sender] -= totalPrice; // Deduct balance from the buyer
+        balances[owner] += totalPrice; // Add balance to the owner
+
+        emit ItemPurchased(id, msg.sender, quantity); // Emit ItemPurchased event
+    }
 
     // Function to withdraw contract funds (Ether)
     function withdrawFunds() public onlyOwner {
-        uint balance = address(this).balance;
+        uint balance = balances[owner];
         require(balance > 0, "No funds to withdraw");
 
+        balances[owner] = 0;
         (bool success, ) = owner.call{value: balance}("");
         require(success, "Withdrawal failed"); // Ensure transfer was successful
+
+        // Assert condition to ensure balance is zero after withdrawal
+        assert(balances[owner] == 0);
     }
 
     // Function to view emergency stop status (view function)
@@ -74,6 +87,9 @@ contract LocalStore {
         require(amount > 0, "Amount must be greater than 0");
 
         balances[account] += amount; // Increase balance of the account
+
+        // Assert condition to ensure balance was increased correctly
+        assert(balances[account] >= amount);
 
         emit BalanceIncreased(account, amount); // Emit BalanceIncreased event
     }
