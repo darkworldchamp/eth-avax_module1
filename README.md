@@ -29,7 +29,9 @@ This repository contains a Solidity smart contract named `LocalStore` that facil
   - Reverts if `quantity` is not greater than 0.
   - Reverts if there is not enough `stock` of the item.
   - Reverts if `paymentAmount` does not match the calculated price for the specified quantity.
-
+  - Assert if `id` is correctly added.
+  - Assert if `price` is correctly added.
+  - Assert if `stock` is correctly added.
 ### `withdrawFunds`
 
 - **Description**: Allows the contract owner to withdraw Ether balance from the contract.
